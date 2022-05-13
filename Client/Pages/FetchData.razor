@@ -1,9 +1,12 @@
 ﻿@page "/fetchdata"
 @using BlazorApp.Shared 
 @inject System.Net.Http.HttpClient HttpClient
+@inject Microsoft.JSInterop.IJSRuntime JS
 @using System.Net.Http.Json;
 
 <h1>Weather forecast</h1>
+
+<button class="btn btn-primary" @onclick="@GeneratePDF">Generate PDF</button>
 
 <p>This component demonstrates fetching data from the server.</p>
 
@@ -42,12 +45,19 @@ else
     protected override async Task OnInitializedAsync()
     {
         try
-        {
-            forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("/api/WeatherForecast") ?? new WeatherForecast[]{};
+        {            
+            //forecasts = await HttpClient.GetFromJsonAsync<WeatherForecast[]>("/api/WeatherForecast") ?? new WeatherForecast[]{};
         }
         catch (Exception ex)
         {
             Console.WriteLine(ex.ToString());
         }
+    }
+}
+@functions{
+    async void GeneratePDF()
+    {
+        string data = await HttpClient.GetStringAsync("/api/WeatherForecast");
+        JS.SaveAs("Sample.pdf", Convert.FromBase64String(data));
     }
 }
