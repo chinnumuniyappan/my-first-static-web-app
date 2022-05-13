@@ -1,7 +1,28 @@
 ﻿@page "/"
+@using Syncfusion.Pdf;
+@using Syncfusion.Drawing;
+@using Syncfusion.Pdf.Graphics;
+@inject Microsoft.JSInterop.IJSRuntime JS
+@using System.IO;
+
 
 <PageTitle>Index</PageTitle>
 
-<h1>Hello, world!</h1>
+<button class="btn btn-primary" @onclick="@GeneratePDF">Generate PDF</button>
 
-Welcome to your new app.
+@functions{
+    void GeneratePDF()
+    {
+        PdfDocument pdfDocument = new PdfDocument();
+        //Add Page to the PDF document.
+        PdfPage page = pdfDocument.Pages.Add();
+        //Create a new font.
+        PdfStandardFont font = new PdfStandardFont(PdfFontFamily.TimesRoman, 16);
+        page.Graphics.DrawString("Hello World!", font, PdfBrushes.Red, PointF.Empty);
+        MemoryStream memoryStream = new MemoryStream();
+        // Save the PDF document.
+        pdfDocument.Save(memoryStream);
+        // Download the PDF document
+        JS.SaveAs("Sample.pdf", memoryStream.ToArray());
+    }
+}
