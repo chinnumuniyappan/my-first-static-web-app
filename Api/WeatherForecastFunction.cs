@@ -66,6 +66,8 @@ namespace BlazorApp.Api
             PdfFont font = new PdfStandardFont(PdfFontFamily.Helvetica, 20);
             //Draw the text.
             graphics.DrawString("Hello World!!!", font, PdfBrushes.Black, new PointF(0, 0));
+            PdfBitmap image = new PdfBitmap(await GetImageStreamAsync());
+            page.Graphics.DrawImage(image, new RectangleF(0, 50, 500, 300));
             MemoryStream ms = new MemoryStream();
             //Save the PDF document  
             document.Save(ms);
@@ -79,6 +81,14 @@ namespace BlazorApp.Api
             //};
             //response.Content.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/pdf");
             //return response;
+        }
+        private static async Task<Stream> GetImageStreamAsync()
+        {
+            HttpClient client = new HttpClient();
+           return await client.GetStreamAsync("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg");
+            //return await HttpClient.GetStreamAsync("https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg");
+            //https://cdn.pixabay.com/photo/2015/04/23/22/00/tree-736885_1280.jpg
+            //https://avatars.githubusercontent.com/u/9141961
         }
     }
 }
